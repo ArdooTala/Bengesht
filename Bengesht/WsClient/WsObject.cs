@@ -14,13 +14,16 @@ namespace Bengesht.WsClient
 		private WebSocket webSocket;
 		public int status;
 		public string message;
-		private string initMessage;
+        private Queue<string> messages = new Queue<string>();
+        private string initMessage;
 		public event EventHandler changed;
-		
+        public int BufferCount => messages.Count;
+        public string Message => messages.Dequeue();
 
 
 
-		public WsObject init(string address, string initMessage)
+
+        public WsObject init(string address, string initMessage)
 		{
 			this.webSocket = new WebSocket(address);
 			this.initMessage = initMessage;
@@ -50,7 +53,7 @@ namespace Bengesht.WsClient
 			this.webSocket.OnError += this.onError;
 			this.webSocket.OnClose += this.onClose;
 
-			this.webSocket.ConnectAsync();
+			this.webSocket.Connect();
 
 			return this;
 		}
@@ -98,7 +101,10 @@ namespace Bengesht.WsClient
 			status = WsObjectStatus.MESSAGE;
 
 			if (!e.IsPing)
+			{
 				message = e.Data;
+				messages.Enqueue(message);
+			}
 
 			onChanged();
 		}
@@ -121,7 +127,7 @@ namespace Bengesht.WsClient
 			if(webSocket != null && webSocket.IsConnected)
 				webSocket.Send(msg);
 		}
-	}
+    }
 
 
 
