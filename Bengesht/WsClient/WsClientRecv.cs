@@ -127,12 +127,6 @@ namespace Bengesht.WsClientCat
             DA.SetData(0, this.wscObj.Message);
             DA.SetData(1, WsObjectStatus.GetStatusName(this.wscObj.status));
             this.onMessageTriggered = false;
-            //if (this.wscObj.BufferCount > 0)
-            //    ghDocument.ScheduleSolution(10, doc =>
-            //    {
-            //        this.onMessageTriggered = true;
-            //        this.ExpireSolution(true);
-            //    });
         }
 
 
@@ -157,12 +151,18 @@ namespace Bengesht.WsClientCat
 
         private void wscObjOnChanged(object sender, EventArgs e)
         {
-
-            ghDocument.ScheduleSolution(10, doc =>
+            if (this.isAutoUpdate)
             {
-                this.onMessageTriggered = true;
-                this.ExpireSolution(true);
-            });
+                ghDocument.ScheduleSolution(10, doc =>
+                {
+                    this.onMessageTriggered = true;
+                    //if (this.Phase != 0)
+                    //{
+                    //    ;
+                    //}
+                    this.ExpireSolution(true);
+                });
+            }
 
 
             //if (this.isAutoUpdate && ghDocument.SolutionState != GH_ProcessStep.Process && wscObj != null && !isAskingNewSolution)

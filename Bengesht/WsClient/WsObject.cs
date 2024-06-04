@@ -14,11 +14,17 @@ namespace Bengesht.WsClient
 		private WebSocket webSocket;
 		public int status;
 		public string message;
-        private Queue<string> messages = new Queue<string>();
-        private string initMessage;
+		private Queue<string> messages = new Queue<string>();
+		private string initMessage;
 		public event EventHandler changed;
-        public int BufferCount => messages.Count;
-        public string Message => messages.Dequeue();
+		public int BufferCount => messages.Count;
+		public string Message {
+			get {
+				if (BufferCount > 0)
+					return messages.Dequeue();
+				else return "";
+			}
+		}
 
 
 
